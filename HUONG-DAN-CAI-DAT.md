@@ -58,7 +58,7 @@ DB_PASSWORD=matkhau_cua_ban_o_day
 
 # Secret keys — chạy 2 lệnh bên dưới để tạo giá trị ngẫu nhiên
 JWT_SECRET=     # Dán kết quả lệnh: openssl rand -hex 32
-ENCRYPTION_KEY= # Dán kết quả lệnh: openssl rand -hex 16
+ENCRYPTION_KEY= # Dán kết quả lệnh: openssl rand -hex 32
 
 # URL công khai (nếu có domain)
 APP_URL=https://ten-domain-cua-ban.com
@@ -71,7 +71,7 @@ APP_URL=https://ten-domain-cua-ban.com
 openssl rand -hex 32
 
 # Chạy lệnh này, copy kết quả dán vào ENCRYPTION_KEY
-openssl rand -hex 16
+openssl rand -hex 32
 ```
 
 Lưu file: nhấn `Ctrl + X`, chọn `Y`, nhấn `Enter`.

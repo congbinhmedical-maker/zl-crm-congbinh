@@ -2,7 +2,7 @@
 
 Hệ thống quản lý tập trung nhiều tài khoản Zalo cá nhân trên 1 giao diện web. Chat real-time, gửi ảnh/video/audio/file qua MinIO/S3/R2, Facebook Lead Ingestion, AI assistant, workflow tự động, tích hợp đa nền tảng, analytics nâng cao, PWA mobile.
 
-**GitHub:** [https://github.com/dmman16pn/ZaloCRM](https://github.com/dmman16pn/ZaloCRM)
+**Phát triển từ dự án gốc:** [github.com/dmman16pn/ZaloCRM](https://github.com/dmman16pn/ZaloCRM)
 
 ## Ảnh chụp giao diện v3.3
 
@@ -115,8 +115,8 @@ Hệ thống quản lý tập trung nhiều tài khoản Zalo cá nhân trên 1 
 ## Cài đặt mới
 
 ```bash
-git clone https://github.com/dmman16pn/ZaloCRM.git
-cd ZaloCRM
+git clone https://github.com/congbinhmedical-maker/zl-crm-congbinh.git
+cd zl-crm-congbinh
 cp .env.example .env
 # Sửa file .env — đặt JWT_SECRET, ENCRYPTION_KEY, DB_PASSWORD, MINIO_ROOT_PASSWORD
 docker compose up -d --build
@@ -413,34 +413,20 @@ Header: X-API-Key: your-api-key
 | `zalo.connected` | Zalo kết nối |
 | `zalo.disconnected` | Zalo mất kết nối |
 
-## Cộng đồng
+## Liên hệ & Hỗ trợ
 
-Tham gia nhóm Telegram để trao đổi, hỏi đáp, nhận thông báo bản phát hành mới:
+Công Bình Medical triển khai và hỗ trợ hệ thống CRM này cho doanh nghiệp. Liên hệ trực tiếp để được tư vấn:
 
-<p align="left">
-  <a href="https://t.me/+KKJ3SJSx6PA3NDE1">
-    <img src="docs/user-guide-images/qr-group-telegram.png" alt="Telegram Group QR" width="200" />
-  </a>
-</p>
-
-- 📲 **Quét QR** ở trên bằng app Telegram, hoặc
-- 💬 **Telegram:** [Tham gia group](https://t.me/+KKJ3SJSx6PA3NDE1)
-
-## Dịch vụ & Hỗ trợ
-
-Bạn cần triển khai ZaloCRM cho doanh nghiệp, custom thêm tính năng riêng, hoặc tích hợp với hệ thống có sẵn? Liên hệ trực tiếp tôi để được tư vấn:
-
-- 🌐 **Website:** [https://shinsulab.com](https://shinsulab.com)
-- 📧 **Email:** [dmman16pn@gmail.com](mailto:dmman16pn@gmail.com)
-- 💬 **Telegram:** [Tham gia group](https://t.me/+KKJ3SJSx6PA3NDE1)
+- 🌐 **Website:** [www.congbinhmedical.vn](https://www.congbinhmedical.vn)
+- 📧 **Email:** [congbinhmedical@gmail.com](mailto:congbinhmedical@gmail.com)
+- 📞 **Hotline:** 0925 888 968
 
 ### Dịch vụ cung cấp
-- **Setup & deploy** ZaloCRM trên server riêng (VPS / dedicated / cloud)
-- **Customize** giao diện, workflow, AI prompt theo nghiệp vụ doanh nghiệp
-- **Phát triển tính năng mới** theo yêu cầu (CRM module, AI agent, automation, dashboard riêng)
-- **Tích hợp** với hệ thống có sẵn: ERP, CRM khác (HubSpot, Salesforce), payment gateway, kế toán
-- **Đào tạo & support** team sử dụng, vận hành, troubleshoot
-- **Mở rộng zca-js** — fix bug, thêm tính năng đặc thù, tối ưu chống block
+- **Cài đặt và triển khai** hệ thống trên máy chủ riêng (VPS / dedicated / cloud)
+- **Tùy chỉnh** giao diện, quy trình, kịch bản theo nghiệp vụ của từng doanh nghiệp
+- **Phát triển CRM may đo:** quản lý vận hành, nhân sự, lương thưởng, kế hoạch, kho
+- **Phần mềm quản lý phòng khám nha khoa** và CRM quản lý trường học
+- **Đào tạo và hỗ trợ** đội ngũ sử dụng, vận hành, xử lý sự cố
 
 ## Miễn trừ trách nhiệm & Thông báo pháp lý
 

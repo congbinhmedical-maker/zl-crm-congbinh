@@ -31,7 +31,7 @@ VIAddVersionKey "FileDescription" "Bộ cài ${APPNAME}"
 !define MUI_UNICON "congbinh.ico"
 !define MUI_ABORTWARNING
 !define MUI_WELCOMEPAGE_TITLE "Cài đặt ${APPNAME}"
-!define MUI_WELCOMEPAGE_TEXT "Phần mềm quản lý nhiều nick Zalo cho đội sales.$\r$\n$\r$\nYÊU CẦU: máy đã cài Docker Desktop (docker.com/products/docker-desktop), ổ đĩa còn trống ít nhất 15 GB, có Internet.$\r$\n$\r$\nLần cài đầu mất 5–15 phút. Bấm Tiếp để chọn thư mục cài."
+!define MUI_WELCOMEPAGE_TEXT "Phần mềm quản lý nhiều nick Zalo cho đội sales.$\r$\n$\r$\nNếu máy chưa có Docker Desktop (phần nền bắt buộc), bộ cài sẽ tự tải, tự cài, khởi động lại máy rồi cài tiếp.$\r$\n$\r$\nYÊU CẦU: Windows 10/11, ổ đĩa trống ít nhất 20 GB, có Internet.$\r$\n$\r$\nLần cài đầu mất 15–30 phút. Bấm Tiếp để chọn thư mục cài."
 !define MUI_DIRECTORYPAGE_TEXT_TOP "Chọn ổ và thư mục cài. Mặc định là E:\ZL-CRM nếu máy có ổ E. Tránh thư mục Program Files."
 !define MUI_FINISHPAGE_TITLE "Đã chép xong file"
 !define MUI_FINISHPAGE_TEXT "Cửa sổ màu xanh đã dựng xong phần mềm và mở trình duyệt.$\r$\n$\r$\nTừ lần sau: bấm biểu tượng '${APPNAME}' ngoài màn hình.$\r$\nTài khoản và mật khẩu nằm trong file MAT-KHAU-DANG-NHAP.txt ở thư mục cài."

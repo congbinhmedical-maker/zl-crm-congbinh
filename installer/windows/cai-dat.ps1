@@ -22,21 +22,75 @@ Say '=============================================='
 
 # 1. Docker Desktop
 Say '[1/5] Kiem tra Docker Desktop...'
+# Docker Desktop co the cai cho moi nguoi (Program Files) hoac rieng 1 user (LocalAppData)
+function FindDockerDesktop {
+  $c = @((Join-Path $env:ProgramFiles 'Docker\Docker\Docker Desktop.exe'))
+  $c += Get-ChildItem (Join-Path $env:LOCALAPPDATA 'Programs') -Filter 'Docker Desktop.exe' -Recurse -Depth 3 -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+  $c | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+}
+$dd = FindDockerDesktop
+if ($dd) {
+  $dockerBin = Join-Path (Split-Path -Parent $dd) 'resources\bin'
+  if ((Test-Path $dockerBin) -and ($env:Path -notlike "*$dockerBin*")) { $env:Path = "$dockerBin;$env:Path" }
+}
 $docker = Get-Command docker -ErrorAction SilentlyContinue
 if (-not $docker) {
-  Fail 'Chua cai Docker Desktop. Tai tai https://www.docker.com/products/docker-desktop , cai xong khoi dong lai may roi chay lai bo cai.'
+  Say ''
+  Say '      May chua co Docker Desktop (phan nen bat buoc).' 'Yellow'
+  Say '      Bo cai se TU TAI VA CAI Docker Desktop (khoang 500 MB, 10-20 phut),'
+  Say '      sau do TU KHOI DONG LAI MAY va tu cai tiep phan mem.'
+  Say '      Windows se hoi quyen quan tri (Yes) 1-2 lan: bam Yes.' 'Yellow'
+  $ans = Read-Host '      Bam Enter de bat dau (go N roi Enter de huy)'
+  if ($ans -match '^[nN]') { Fail 'Da huy. Cai Docker Desktop tai https://www.docker.com/products/docker-desktop roi chay lai bo cai.' }
+
+  # a) WSL 2 (Docker can). Chi cai neu chua co.
+  cmd /c 'wsl.exe --status >nul 2>&1'
+  if ($LASTEXITCODE -ne 0) {
+    Say '      Dang bat WSL 2...'
+    Start-Process wsl.exe -ArgumentList '--install --no-distribution' -Verb RunAs -Wait
+  }
+
+  # b) Docker Desktop: thu winget truoc, khong duoc thi tai ban chinh thuc
+  $installed = $false
+  if (Get-Command winget -ErrorAction SilentlyContinue) {
+    Say '      Dang cai Docker Desktop bang winget...'
+    $p = Start-Process winget -ArgumentList 'install -e --id Docker.DockerDesktop --accept-package-agreements --accept-source-agreements' -Verb RunAs -Wait -PassThru
+    $installed = [bool](FindDockerDesktop)
+  }
+  if (-not $installed) {
+    $url = 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
+    $file = Join-Path $env:TEMP 'DockerDesktopInstaller.exe'
+    Say '      Dang tai Docker Desktop tu docker.com (khoang 500 MB)...'
+    try { Start-BitsTransfer -Source $url -Destination $file -ErrorAction Stop }
+    catch { Invoke-WebRequest -Uri $url -OutFile $file -UseBasicParsing }
+    if (-not (Test-Path $file)) { Fail 'Khong tai duoc Docker Desktop. Kiem tra Internet roi chay lai.' }
+    Say '      Dang cai Docker Desktop...'
+    Start-Process $file -ArgumentList 'install --quiet --accept-license --backend=wsl-2' -Verb RunAs -Wait
+    $installed = [bool](FindDockerDesktop)
+  }
+  if (-not $installed) { Fail 'Cai Docker Desktop khong thanh cong. Cai tay tai https://www.docker.com/products/docker-desktop roi chay lai bo cai.' }
+
+  # c) Tu chay tiep sau khi khoi dong lai
+  $cmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Dir `"$Dir`""
+  Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -Name 'CongBinhZaloCRM' -Value $cmd
+  Say ''
+  Say '      Da cai xong Docker Desktop. CAN KHOI DONG LAI MAY.' 'Green'
+  Say '      Sau khi bat lai may va dang nhap, cua so nay se tu mo va cai tiep.' 'Green'
+  Read-Host '      Luu cong viec dang lam, roi bam Enter de khoi dong lai ngay'
+  Restart-Computer -Force
+  exit 0
 }
 function DockerOk { cmd /c 'docker info >nul 2>&1'; return ($LASTEXITCODE -eq 0) }
 if (-not (DockerOk)) {
   Say '      Docker chua chay, dang mo Docker Desktop...' 'Yellow'
-  $exe = Join-Path $env:ProgramFiles 'Docker\Docker\Docker Desktop.exe'
-  if (Test-Path $exe) { Start-Process $exe }
+  $exe = FindDockerDesktop
+  if ($exe) { Start-Process $exe }
   $ok = $false
-  for ($i = 0; $i -lt 60; $i++) {
+  for ($i = 0; $i -lt 120; $i++) {
     Start-Sleep -Seconds 5
     if (DockerOk) { $ok = $true; break }
   }
-  if (-not $ok) { Fail 'Docker Desktop khong khoi dong duoc sau 5 phut. Mo Docker Desktop bang tay, doi bieu tuong chuyen xanh, roi chay lai.' }
+  if (-not $ok) { Fail 'Docker Desktop khong khoi dong duoc sau 10 phut. Mo Docker Desktop bang tay, doi bieu tuong chuyen xanh, roi chay lai.' }
 }
 Say '      OK' 'Green'
 

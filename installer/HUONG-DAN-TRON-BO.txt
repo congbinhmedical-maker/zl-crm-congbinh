@@ -16,6 +16,8 @@ Yêu cầu: Windows 10/11, RAM 8 GB trở lên, ổ đĩa trống 15 GB, có Int
   2. Bấm đúp CAI-DAT-CongBinh-ZaloCRM.exe
      - Nếu Windows báo "đã bảo vệ máy tính": bấm "Thông tin thêm" -> "Vẫn chạy".
      - Thư mục mặc định: E:\ZL-CRM (nếu máy có ổ E), có thể đổi.
+  2b. Máy chưa có Docker Desktop: bộ cài tự tải và cài (bấm Yes khi Windows hỏi),
+      rồi khởi động lại máy. Đăng nhập lại là tự cài tiếp.
   3. Cửa sổ xanh dựng phần mềm 5–15 phút. Xong tự mở trình duyệt.
   4. Mật khẩu đăng nhập: file MAT-KHAU-DANG-NHAP.txt trong thư mục cài.
      Đăng nhập xong đổi mật khẩu ngay.

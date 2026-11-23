@@ -80,6 +80,18 @@ if (-not $docker) {
   Restart-Computer -Force
   exit 0
 }
+# WSL 2 bat buoc cho Docker Desktop: kiem tra ca khi Docker da cai san
+cmd /c 'wsl.exe --status >nul 2>&1'
+if ($LASTEXITCODE -ne 0) {
+  Say '      May chua bat WSL 2 (Docker can). Dang bat - Windows hoi quyen thi bam Yes...' 'Yellow'
+  Start-Process wsl.exe -ArgumentList '--install --no-distribution' -Verb RunAs -Wait
+  $cmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Dir `"$Dir`""
+  Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -Name 'CongBinhZaloCRM' -Value $cmd
+  Say '      Da bat WSL 2. CAN KHOI DONG LAI MAY, sau do cua so nay tu cai tiep.' 'Green'
+  Read-Host '      Luu cong viec dang lam, roi bam Enter de khoi dong lai ngay'
+  Restart-Computer -Force
+  exit 0
+}
 function DockerOk { cmd /c 'docker info >nul 2>&1'; return ($LASTEXITCODE -eq 0) }
 if (-not (DockerOk)) {
   Say '      Docker chua chay, dang mo Docker Desktop...' 'Yellow'

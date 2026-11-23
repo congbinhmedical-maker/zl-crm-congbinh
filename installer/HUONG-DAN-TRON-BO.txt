@@ -1,0 +1,67 @@
+﻿CÔNG BÌNH ZALO CRM – BỘ TRỌN GÓI
+==================================
+
+Trong file nén này có:
+  1. CAI-DAT-CongBinh-ZaloCRM.exe  -> Bộ cài cho Windows
+  2. MA-NGUON\                     -> Toàn bộ mã nguồn (để sửa, nâng cấp, đóng gói lại)
+  3. HUONG-DAN-TRON-BO.txt          -> File này
+
+
+A. CÀI LÊN MỘT MÁY TÍNH (máy mới hoặc máy khác)
+--------------------------------------------------
+Yêu cầu: Windows 10/11, RAM 8 GB trở lên, ổ đĩa trống 15 GB, có Internet.
+
+  1. Cài Docker Desktop: https://www.docker.com/products/docker-desktop
+     Khởi động lại máy, mở Docker Desktop, đợi biểu tượng cá voi chuyển xanh.
+  2. Bấm đúp CAI-DAT-CongBinh-ZaloCRM.exe
+     - Nếu Windows báo "đã bảo vệ máy tính": bấm "Thông tin thêm" -> "Vẫn chạy".
+     - Thư mục mặc định: E:\ZL-CRM (nếu máy có ổ E), có thể đổi.
+  3. Cửa sổ xanh dựng phần mềm 5–15 phút. Xong tự mở trình duyệt.
+  4. Mật khẩu đăng nhập: file MAT-KHAU-DANG-NHAP.txt trong thư mục cài.
+     Đăng nhập xong đổi mật khẩu ngay.
+
+Từ lần sau: bấm biểu tượng "Công Bình Zalo CRM" ngoài màn hình.
+Menu Start > Công Bình Zalo CRM: Mở / Tắt / Sao lưu / Khôi phục / Gỡ cài đặt.
+
+
+B. CHUYỂN SANG MÁY KHÁC MÀ GIỮ NGUYÊN DỮ LIỆU
+-------------------------------------------------
+Máy cũ:
+  1. Mở phần mềm.
+  2. Start > Công Bình Zalo CRM > "Sao lưu để chuyển máy".
+  3. Chép 2 file trong thư mục backups: chuyen-may.dump và chuyen-may.env
+     sang USB. KHÔNG gửi 2 file này qua Zalo/email (chứa phiên đăng nhập Zalo
+     và khóa mã hóa).
+Máy mới:
+  4. Cài theo mục A.
+  5. Chép 2 file vào thư mục backups của máy mới (VD E:\ZL-CRM\backups).
+  6. Start > Công Bình Zalo CRM > "Khôi phục dữ liệu từ máy cũ".
+  7. Tắt phần mềm trên máy cũ: một nick Zalo không nên chạy ở 2 máy cùng lúc.
+
+
+C. SỬA CHỮA / NÂNG CẤP
+-------------------------
+Cách dễ nhất: nhắn Claude yêu cầu bằng lời, kèm link thư mục Drive
+"Phần Mềm ZALO". Claude sửa, đẩy lên GitHub và đóng gói lại bộ cài.
+
+Tự sửa (người kỹ thuật):
+  - Mã nguồn nằm trong MA-NGUON\ (bản chính trên GitHub:
+    https://github.com/congbinhmedical-maker/zl-crm-congbinh, nhánh congbinh/ban-cai-dat).
+  - Giao diện: MA-NGUON\frontend\src   (Vue 3)
+  - Máy chủ:   MA-NGUON\backend\src    (Node.js, Fastify, Prisma)
+  - Logo:      MA-NGUON\frontend\public\brand\
+  - Áp bản sửa lên máy đang chạy: chép đè thư mục backend/frontend vào thư mục
+    cài (VD E:\ZL-CRM), rồi mở PowerShell tại đó chạy:
+        docker compose up -d --build
+  - Đóng gói lại bộ cài .exe (trên Linux hoặc WSL, cần git + nsis):
+        bash installer/build-windows.sh
+
+
+D. LƯU Ý
+---------
+  - Máy phải bật thì Zalo mới nhận tin. Dùng cho cả đội nên cài lên VPS
+    (xem MA-NGUON\CAI-DAT-CONG-BINH.md).
+  - Database tự sao lưu hằng ngày vào thư mục backups.
+  - Phần mềm dùng giao thức Zalo không chính thức: chỉ dùng nick phụ khi mới
+    thử, không gửi tin hàng loạt.
+  - Bản quyền: Apache 2.0, giữ nguyên LICENSE và NOTICE trong MA-NGUON.

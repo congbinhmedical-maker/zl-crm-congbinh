@@ -58,6 +58,8 @@ Section "Cài đặt" SecMain
   File "cai-dat.ps1"
   File "mo-phan-mem.bat"
   File "tat-phan-mem.bat"
+  File "sao-luu-du-lieu.bat"
+  File "khoi-phuc-du-lieu.bat"
   SetOutPath "$INSTDIR"
 
   WriteUninstaller "$INSTDIR\go-cai-dat.exe"
@@ -66,6 +68,8 @@ Section "Cài đặt" SecMain
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Mở ${APPNAME}.lnk" "$INSTDIR\installer\mo-phan-mem.bat" "" "$INSTDIR\installer\congbinh.ico"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Tắt ${APPNAME}.lnk" "$INSTDIR\installer\tat-phan-mem.bat" "" "$INSTDIR\installer\congbinh.ico"
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\Sao lưu để chuyển máy.lnk" "$INSTDIR\installer\sao-luu-du-lieu.bat" "" "$INSTDIR\installer\congbinh.ico"
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\Khôi phục dữ liệu từ máy cũ.lnk" "$INSTDIR\installer\khoi-phuc-du-lieu.bat" "" "$INSTDIR\installer\congbinh.ico"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Mật khẩu đăng nhập.lnk" "$INSTDIR\MAT-KHAU-DANG-NHAP.txt"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Gỡ cài đặt.lnk" "$INSTDIR\go-cai-dat.exe"
 

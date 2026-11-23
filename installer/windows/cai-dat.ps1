@@ -1,0 +1,105 @@
+﻿# Cong Binh Zalo CRM - buoc cai dat sau khi giai nen
+# Duoc bo cai (Setup.exe) goi tu dong. Co the chay lai bang tay neu can.
+param([string]$Dir = (Split-Path -Parent (Split-Path -Parent $PSCommandPath)))
+
+$ErrorActionPreference = 'Continue'
+Set-Location $Dir
+$Host.UI.RawUI.WindowTitle = 'Cong Binh Zalo CRM - Dang cai dat'
+
+function Say($msg, $color = 'White') { Write-Host $msg -ForegroundColor $color }
+function Fail($msg) {
+  Say ''
+  Say "LOI: $msg" 'Red'
+  Say 'Chup man hinh cua so nay gui cho bo phan ky thuat.' 'Yellow'
+  Read-Host 'Bam Enter de dong'
+  exit 1
+}
+
+Say '=============================================='
+Say '   CONG BINH ZALO CRM - CAI DAT' 'Cyan'
+Say "   Thu muc: $Dir"
+Say '=============================================='
+
+# 1. Docker Desktop
+Say '[1/5] Kiem tra Docker Desktop...'
+$docker = Get-Command docker -ErrorAction SilentlyContinue
+if (-not $docker) {
+  Fail 'Chua cai Docker Desktop. Tai tai https://www.docker.com/products/docker-desktop , cai xong khoi dong lai may roi chay lai bo cai.'
+}
+function DockerOk { cmd /c 'docker info >nul 2>&1'; return ($LASTEXITCODE -eq 0) }
+if (-not (DockerOk)) {
+  Say '      Docker chua chay, dang mo Docker Desktop...' 'Yellow'
+  $exe = Join-Path $env:ProgramFiles 'Docker\Docker\Docker Desktop.exe'
+  if (Test-Path $exe) { Start-Process $exe }
+  $ok = $false
+  for ($i = 0; $i -lt 60; $i++) {
+    Start-Sleep -Seconds 5
+    if (DockerOk) { $ok = $true; break }
+  }
+  if (-not $ok) { Fail 'Docker Desktop khong khoi dong duoc sau 5 phut. Mo Docker Desktop bang tay, doi bieu tuong chuyen xanh, roi chay lai.' }
+}
+Say '      OK' 'Green'
+
+# 2. File cau hinh .env voi mat khau ngau nhien (chi tao lan dau)
+Say '[2/5] Tao cau hinh va mat khau...'
+function RandHex([int]$bytes) {
+  $b = New-Object byte[] $bytes
+  [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
+  -join ($b | ForEach-Object { $_.ToString('x2') })
+}
+$envFile = Join-Path $Dir '.env'
+$passFile = Join-Path $Dir 'MAT-KHAU-DANG-NHAP.txt'
+if (-not (Test-Path $envFile)) {
+  $db = RandHex 18; $minio = RandHex 18
+  $admin = 'Cb@' + (RandHex 5)
+  $lines = Get-Content (Join-Path $Dir '.env.demo')
+  $map = @{
+    'JWT_SECRET'               = (RandHex 32)
+    'ENCRYPTION_KEY'           = (RandHex 32)
+    'FB_TOKEN_ENC_KEY'         = (RandHex 32)
+    'DB_PASSWORD'              = $db
+    'DATABASE_URL'             = "postgresql://crmuser:$db@db:5432/zalocrm"
+    'S3_SECRET_KEY'            = $minio
+    'MINIO_ROOT_PASSWORD'      = $minio
+    'BOOTSTRAP_ADMIN_PASSWORD' = $admin
+  }
+  $out = foreach ($l in $lines) {
+    if ($l -match '^([A-Z_]+)=' -and $map.ContainsKey($Matches[1])) { "$($Matches[1])=$($map[$Matches[1]])" }
+    elseif ($l -match '^#') { $null }
+    else { $l }
+  }
+  [System.IO.File]::WriteAllText($envFile, (($out | Where-Object { $_ -ne $null }) -join "`n") + "`n", (New-Object System.Text.UTF8Encoding($false)))
+  $txt = "CONG BINH ZALO CRM`r`nDia chi: http://localhost:3080`r`nTai khoan: 0900000000`r`nMat khau: $admin`r`n`r`nDang nhap xong hay doi mat khau ngay.`r`n"
+  [System.IO.File]::WriteAllText($passFile, $txt, (New-Object System.Text.UTF8Encoding($false)))
+  Say '      Da tao mat khau moi.' 'Green'
+} else {
+  Say '      Da co cau hinh tu lan cai truoc, giu nguyen.' 'Green'
+}
+
+# 3. Build va chay
+Say '[3/5] Tai va dung phan mem (lan dau mat 5-15 phut, dung tat cua so)...'
+docker compose up -d --build
+if ($LASTEXITCODE -ne 0) { Fail 'docker compose khong chay duoc (xem dong loi phia tren).' }
+Say '      OK' 'Green'
+
+# 4. Cho phan mem san sang
+Say '[4/5] Cho phan mem khoi dong...'
+$ready = $false
+for ($i = 0; $i -lt 60; $i++) {
+  try {
+    $r = Invoke-WebRequest -Uri 'http://localhost:3080/login' -UseBasicParsing -TimeoutSec 5
+    if ($r.StatusCode -eq 200) { $ready = $true; break }
+  } catch { }
+  Start-Sleep -Seconds 5
+}
+if (-not $ready) { Fail 'Phan mem chua phan hoi sau 5 phut. Chay lenh: docker compose logs app --tail 50 trong thu muc cai dat de xem loi.' }
+Say '      OK' 'Green'
+
+# 5. Xong
+Say '[5/5] Hoan tat!' 'Green'
+Say ''
+if (Test-Path $passFile) { Get-Content $passFile | ForEach-Object { Say "   $_" 'Cyan' } }
+Say ''
+Say "Mat khau duoc luu o: $passFile" 'Yellow'
+Start-Process 'http://localhost:3080'
+Read-Host 'Bam Enter de dong cua so'

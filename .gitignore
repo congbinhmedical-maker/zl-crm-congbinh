@@ -34,3 +34,4 @@ backend/prisma/schema/_*/
 .env
 docker-compose.override.yml
 CAI-DAT-CUC-BO.md
+dist-installer/

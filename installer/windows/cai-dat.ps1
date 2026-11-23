@@ -44,11 +44,6 @@ if (-not $docker) {
   if ($ans -match '^[nN]') { Fail 'Da huy. Cai Docker Desktop tai https://www.docker.com/products/docker-desktop roi chay lai bo cai.' }
 
   # a) WSL 2 (Docker can). Chi cai neu chua co.
-  cmd /c 'wsl.exe --status >nul 2>&1'
-  if ($LASTEXITCODE -ne 0) {
-    Say '      Dang bat WSL 2...'
-    Start-Process wsl.exe -ArgumentList '--install --no-distribution' -Verb RunAs -Wait
-  }
 
   # b) Docker Desktop: thu winget truoc, khong duoc thi tai ban chinh thuc
   $installed = $false
@@ -80,11 +75,31 @@ if (-not $docker) {
   Restart-Computer -Force
   exit 0
 }
-# WSL 2 bat buoc cho Docker Desktop: kiem tra ca khi Docker da cai san
-cmd /c 'wsl.exe --status >nul 2>&1'
-if ($LASTEXITCODE -ne 0) {
+# WSL 2 bat buoc cho Docker Desktop: kiem tra ca khi Docker da cai san.
+# Luon goi ban 64-bit (Sysnative) phong khi script bi chay tu tien trinh 32-bit.
+function SysExe($name) {
+  $n = Join-Path $env:windir "Sysnative\$name"
+  if (Test-Path $n) { return $n }
+  return (Join-Path $env:windir "System32\$name")
+}
+$wsl = SysExe 'wsl.exe'
+$wslOk = $false
+if (Test-Path $wsl) { & $wsl --status *> $null; $wslOk = ($LASTEXITCODE -eq 0) }
+if (-not $wslOk) {
   Say '      May chua bat WSL 2 (Docker can). Dang bat - Windows hoi quyen thi bam Yes...' 'Yellow'
-  Start-Process wsl.exe -ArgumentList '--install --no-distribution' -Verb RunAs -Wait
+  $done = $false
+  if (Test-Path $wsl) {
+    $p = Start-Process $wsl -ArgumentList '--install --no-distribution' -Verb RunAs -Wait -PassThru
+    $done = ($p.ExitCode -eq 0)
+  }
+  if (-not $done) {
+    $dism = SysExe 'dism.exe'
+    $a = Start-Process $dism -ArgumentList '/online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart' -Verb RunAs -Wait -PassThru
+    $b = Start-Process $dism -ArgumentList '/online /enable-feature /featurename:VirtualMachinePlatform /all /norestart' -Verb RunAs -Wait -PassThru
+    # 3010 = thanh cong, can khoi dong lai
+    $done = (@(0, 3010) -contains $a.ExitCode) -and (@(0, 3010) -contains $b.ExitCode)
+  }
+  if (-not $done) { Fail 'Khong bat duoc WSL 2. Mo PowerShell (Run as administrator) chay: wsl --install --no-distribution , khoi dong lai may roi chay lai bo cai.' }
   $cmd = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Dir `"$Dir`""
   Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -Name 'CongBinhZaloCRM' -Value $cmd
   Say '      Da bat WSL 2. CAN KHOI DONG LAI MAY, sau do cua so nay tu cai tiep.' 'Green'

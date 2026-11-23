@@ -81,7 +81,12 @@ Section "Cài đặt" SecMain
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPKEY}" "InstallLocation" "$INSTDIR"
 
   DetailPrint "Đang dựng phần mềm trong cửa sổ PowerShell, vui lòng chờ..."
-  ExecWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\installer\cai-dat.ps1" -Dir "$INSTDIR"'
+  ; Bo cai la tien trinh 32-bit: goi PowerShell 64-bit qua Sysnative de thay wsl.exe/dism.exe
+  StrCpy $0 "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe"
+  ${IfNot} ${FileExists} "$0"
+    StrCpy $0 "powershell.exe"
+  ${EndIf}
+  ExecWait '"$0" -NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\installer\cai-dat.ps1" -Dir "$INSTDIR"'
 SectionEnd
 
 Section "Uninstall"

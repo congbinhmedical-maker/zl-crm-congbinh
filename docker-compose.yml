@@ -1,4 +1,3 @@
-version: "3.8"
 
 services:
   app:
@@ -75,7 +74,8 @@ services:
       - redis
 
   minio:
-    image: minio/minio:latest
+    # minio/minio da bi go khoi Docker Hub (2025). Dung ban cong dong duy tri tiep (PGSTY), ghim phien ban.
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
     container_name: zalo-crm-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
@@ -105,7 +105,7 @@ services:
       retries: 3
 
   minio-init:
-    image: minio/mc:latest
+    image: pgsty/mc:RELEASE.2026-11-12T00-00-00Z
     container_name: zalo-crm-minio-init
     depends_on:
       minio:

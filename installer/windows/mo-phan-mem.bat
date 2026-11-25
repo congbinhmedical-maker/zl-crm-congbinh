@@ -1,5 +1,5 @@
 @echo off
-title Cong Binh Zalo CRM
+title AXIS-ZALO
 cd /d "%~dp0.."
 docker info >nul 2>&1
 if not errorlevel 1 goto run
@@ -11,7 +11,7 @@ timeout /t 5 /nobreak >nul
 docker info >nul 2>&1
 if errorlevel 1 goto wait
 :run
-echo Dang khoi dong Cong Binh Zalo CRM...
+echo Dang khoi dong AXIS-ZALO...
 docker compose up -d
 timeout /t 5 /nobreak >nul
 start "" http://localhost:3080

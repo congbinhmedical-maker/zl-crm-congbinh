@@ -3,7 +3,7 @@
     <div class="text-center mb-8">
       <img
         src="/brand/zalocrm-lockup-vertical.png"
-        alt="ZaloCRM — Quản lý nhiều tài khoản Zalo cá nhân"
+        alt="AXIS-ZALO — Kết nối, tương tác, tự động, hiệu quả"
         class="mx-auto"
         style="max-width: 240px; width: 100%; height: auto; display: block;"
       />

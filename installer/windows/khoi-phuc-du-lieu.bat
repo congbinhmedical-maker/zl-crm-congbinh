@@ -1,5 +1,5 @@
 @echo off
-title Cong Binh Zalo CRM - Khoi phuc du lieu tu may cu
+title AXIS-ZALO - Khoi phuc du lieu tu may cu
 cd /d "%~dp0.."
 if not exist backups\chuyen-may.dump goto thieu
 if not exist backups\chuyen-may.env goto thieu

@@ -1,10 +1,10 @@
-﻿# Cong Binh Zalo CRM - buoc cai dat sau khi giai nen
+﻿# AXIS-ZALO - buoc cai dat sau khi giai nen
 # Duoc bo cai (Setup.exe) goi tu dong. Co the chay lai bang tay neu can.
 param([string]$Dir = (Split-Path -Parent (Split-Path -Parent $PSCommandPath)))
 
 $ErrorActionPreference = 'Continue'
 Set-Location $Dir
-$Host.UI.RawUI.WindowTitle = 'Cong Binh Zalo CRM - Dang cai dat'
+$Host.UI.RawUI.WindowTitle = 'AXIS-ZALO - Dang cai dat'
 
 function Say($msg, $color = 'White') { Write-Host $msg -ForegroundColor $color }
 function Fail($msg) {
@@ -16,7 +16,7 @@ function Fail($msg) {
 }
 
 Say '=============================================='
-Say '   CONG BINH ZALO CRM - CAI DAT' 'Cyan'
+Say '   AXIS-ZALO - CAI DAT' 'Cyan'
 Say "   Thu muc: $Dir"
 Say '=============================================='
 
@@ -150,7 +150,7 @@ if (-not (Test-Path $envFile)) {
     else { $l }
   }
   [System.IO.File]::WriteAllText($envFile, (($out | Where-Object { $_ -ne $null }) -join "`n") + "`n", (New-Object System.Text.UTF8Encoding($false)))
-  $txt = "CONG BINH ZALO CRM`r`nDia chi: http://localhost:3080`r`nTai khoan: 0900000000`r`nMat khau: $admin`r`n`r`nDang nhap xong hay doi mat khau ngay.`r`n"
+  $txt = "AXIS-ZALO`r`nDia chi: http://localhost:3080`r`nTai khoan: 0900000000`r`nMat khau: $admin`r`n`r`nDang nhap xong hay doi mat khau ngay.`r`n"
   [System.IO.File]::WriteAllText($passFile, $txt, (New-Object System.Text.UTF8Encoding($false)))
   Say '      Da tao mat khau moi.' 'Green'
 } else {

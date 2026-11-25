@@ -1,5 +1,5 @@
 @echo off
-title Cong Binh Zalo CRM - Sao luu de chuyen may
+title AXIS-ZALO - Sao luu de chuyen may
 cd /d "%~dp0.."
 if not exist backups mkdir backups
 echo Dang sao luu du lieu (phan mem phai dang chay)...

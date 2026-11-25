@@ -10,7 +10,7 @@ Unicode true
 !ifndef OUTFILE
   !define OUTFILE "CongBinh-ZaloCRM-Setup.exe"
 !endif
-!define APPNAME "Công Bình Zalo CRM"
+!define APPNAME "AXIS-ZALO"
 !define APPKEY "CongBinhZaloCRM"
 !define VERSION "3.3.4-cb1"
 

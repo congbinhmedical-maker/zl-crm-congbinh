@@ -132,7 +132,11 @@ $envFile = Join-Path $Dir '.env'
 $passFile = Join-Path $Dir 'MAT-KHAU-DANG-NHAP.txt'
 if (-not (Test-Path $envFile)) {
   $db = RandHex 18; $minio = RandHex 18
-  $admin = 'Cb@' + (RandHex 5)
+  $phone = Read-Host '      So dien thoai dang nhap cho quan tri (Enter = 0900000000)'
+  $phone = ($phone -replace '[^0-9]', '')
+  if (-not $phone) { $phone = '0900000000' }
+  $admin = Read-Host '      Mat khau quan tri (Enter = tu tao ngau nhien)'
+  if (-not $admin) { $admin = 'Cb@' + (RandHex 5) }
   $lines = Get-Content (Join-Path $Dir '.env.demo')
   $map = @{
     'JWT_SECRET'               = (RandHex 32)
@@ -143,6 +147,7 @@ if (-not (Test-Path $envFile)) {
     'S3_SECRET_KEY'            = $minio
     'MINIO_ROOT_PASSWORD'      = $minio
     'BOOTSTRAP_ADMIN_PASSWORD' = $admin
+    'BOOTSTRAP_ADMIN_PHONE'    = $phone
   }
   $out = foreach ($l in $lines) {
     if ($l -match '^([A-Z_]+)=' -and $map.ContainsKey($Matches[1])) { "$($Matches[1])=$($map[$Matches[1]])" }
@@ -150,7 +155,7 @@ if (-not (Test-Path $envFile)) {
     else { $l }
   }
   [System.IO.File]::WriteAllText($envFile, (($out | Where-Object { $_ -ne $null }) -join "`n") + "`n", (New-Object System.Text.UTF8Encoding($false)))
-  $txt = "AXIS-ZALO`r`nDia chi: http://localhost:3080`r`nTai khoan: 0900000000`r`nMat khau: $admin`r`n`r`nDang nhap xong hay doi mat khau ngay.`r`n"
+  $txt = "AXIS-ZALO`r`nDia chi: http://localhost:3080`r`nTai khoan: $phone`r`nMat khau: $admin`r`n`r`nDang nhap xong hay doi mat khau ngay.`r`n"
   [System.IO.File]::WriteAllText($passFile, $txt, (New-Object System.Text.UTF8Encoding($false)))
   Say '      Da tao mat khau moi.' 'Green'
 } else {
